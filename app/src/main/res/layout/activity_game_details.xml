@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="#1C1B1F">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,6 +21,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/backgrounds/scenic" />
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#1C1B1F"
+            app:title="Detalhes do Jogo"
+            app:titleTextColor="@android:color/white"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@android:color/white" />
+
+
 
         <TextView
             android:id="@+id/textViewGameTitleDetails"
@@ -39,18 +52,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Plataform"
+            android:text="Plataforma"
             android:textColor="#CAC4D0"
+            android:fitsSystemWindows="true"
             app:layout_constraintStart_toStartOf="@+id/textViewGameTitleDetails"
             app:layout_constraintTop_toBottomOf="@+id/textViewGameTitleDetails" />
 
         <TextView
             android:id="@+id/textViewPlataformValue"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:textColor="@android:color/white"
+            app:layout_constraintEnd_toStartOf="@+id/textViewGenreLabel"
             app:layout_constraintStart_toStartOf="@+id/textViewPlataformLabel"
             app:layout_constraintTop_toBottomOf="@+id/textViewPlataformLabel"
+            android:breakStrategy="simple"
             tools:text="PC" />
         
         <TextView
@@ -58,19 +76,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="64dp"
-            android:text="Genre"
+            android:text="Gênero"
             android:textColor="#CAC4D0"
             app:layout_constraintStart_toEndOf="@+id/textViewPlataformLabel"
             app:layout_constraintTop_toTopOf="@+id/textViewPlataformLabel" />
 
         <TextView
             android:id="@+id/textViewGenreValue"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginEnd="16dp"
             android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="@+id/textViewGenreLabel"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewGenreLabel"
-            tools:text="Action, Metroidvania" />
+            tools:text="RPG, Action, Souls-like, Open World, First-Person Shooter" />
 
         <TextView
             android:id="@+id/textViewStatusLabel"
@@ -86,10 +108,14 @@
             android:id="@+id/textViewStatusValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:text="Zerado"
             android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:background="@drawable/bg_status_chip"
             app:layout_constraintStart_toStartOf="@+id/textViewStatusLabel"
-            app:layout_constraintTop_toBottomOf="@+id/textViewStatusLabel"
-            tools:text="Completed" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewStatusLabel" />
 
         <TextView
             android:id="@+id/textViewRatingValue"
@@ -111,6 +137,7 @@
             android:layout_height="wrap_content"
             android:numStars="5"
             android:rating="4.5"
+            android:progressTint="#9C27B0"
             android:stepSize="0.1"
             app:layout_constraintStart_toStartOf="@+id/textViewRatingValue"
             app:layout_constraintTop_toBottomOf="@+id/textViewRatingValue" />
@@ -124,7 +151,7 @@
             app:layout_constraintStart_toStartOf="@+id/ratingBarDetails"
             app:layout_constraintTop_toBottomOf="@+id/ratingBarDetails"
             tools:text="120 reviews" />
-        
+
         <LinearLayout
             android:id="@+id/layoutProgressBars"
             android:layout_width="0dp"
@@ -137,50 +164,237 @@
             app:layout_constraintStart_toEndOf="@+id/textViewRatingValue"
             app:layout_constraintTop_toTopOf="@+id/textViewRatingValue">
 
+            <!-- 5 estrelas -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:layout_marginVertical="2dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5"
+                    android:textSize="12sp"
                     android:textColor="@android:color/white" />
 
                 <ProgressBar
+                    android:id="@+id/progressBar5"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:layout_height="12dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:max="100"
+                    android:progressTint="#9C27B0"
+                    android:progress="0" />
+
+                <TextView
+                    android:id="@+id/textViewPercent5"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:progress="40"
-                    android:layout_marginHorizontal="8dp" />
+                    android:text="0%"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray" />
+            </LinearLayout>
+
+            <!-- 4 estrelas -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginVertical="2dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="40%"
-                    android:textColor="@android:color/darker_gray" />
+                    android:text="4"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white" />
 
+                <ProgressBar
+                    android:id="@+id/progressBar4"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="12dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:max="100"
+                    android:progressTint="#9C27B0"
+                    android:progress="0" />
+
+                <TextView
+                    android:id="@+id/textViewPercent4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray" />
             </LinearLayout>
 
+            <!-- 3 estrelas -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginVertical="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar3"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="12dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:max="100"
+                    android:progressTint="#9C27B0"
+                    android:progress="0" />
+
+                <TextView
+                    android:id="@+id/textViewPercent3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray" />
+            </LinearLayout>
+
+            <!-- 2 estrelas -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginVertical="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar2"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="12dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:max="100"
+                    android:progressTint="#9C27B0"
+                    android:progress="0" />
+
+                <TextView
+                    android:id="@+id/textViewPercent2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray" />
+            </LinearLayout>
+
+            <!-- 1 estrela -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginVertical="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar1"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="12dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:max="100"
+                    android:progressTint="#9C27B0"
+                    android:progress="0" />
+
+                <TextView
+                    android:id="@+id/textViewPercent1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray" />
+            </LinearLayout>
         </LinearLayout>
-        
+
+
+        <TextView
+            android:id="@+id/textViewDescriptionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Descrição oficial"
+            android:textColor="#CAC4D0"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/textViewReviewsCount"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <TextView
             android:id="@+id/textViewDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="16dp"
             android:textColor="@android:color/white"
             android:lineSpacingExtra="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textViewReviewsCount"
-            app:layout_constraintTop_toBottomOf="@+id/textViewReviewsCount"
+            app:layout_constraintTop_toBottomOf="@+id/textViewDescriptionLabel"
             tools:text="Explore a vast, interconnected world of Hallownest,
  a fallen kingdom of insects and heroes. Battle twisted creatures, befriend
  bizarre bugs, and unravel ancient mysteries at the kingdom's heart." />
+
+        <TextView
+            android:id="@+id/textViewReviewLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sua review"
+            android:textColor="#CAC4D0"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/textViewDescription"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewReviewContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Sem review"
+            android:textColor="@android:color/white"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp"
+            android:layout_marginHorizontal="16dp"
+            app:layout_constraintTop_toBottomOf="@id/textViewReviewLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
 
         <LinearLayout
@@ -189,7 +403,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
-            app:layout_constraintTop_toBottomOf="@+id/textViewDescription"
+            app:layout_constraintTop_toBottomOf="@+id/textViewReviewContent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -6,35 +6,21 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.example.mygamelist.GameAdapter
-import com.example.mygamelist.R
-import com.example.mygamelist.Game
+import com.google.android.material.tabs.TabLayout
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.widget.TextView
+import android.view.View
 
-class MainActivity : AppCompatActivity() {
+class FilterActivity : AppCompatActivity() {
 
+    private lateinit var tabLayout: TabLayout
     private lateinit var recyclerView: RecyclerView
-    private lateinit var fabAdd: FloatingActionButton
+    private lateinit var fabAddFiltered: FloatingActionButton
     private lateinit var gameAdapter: GameAdapter
-
     private lateinit var dbHelper: GameDatabaseHelper
     private var gameList: MutableList<Game> = mutableListOf()
-
     private lateinit var textEmpty: TextView
-
-    private val addGameLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val novoJogo = result.data?.getSerializableExtra("novoJogo") as? Game
-            novoJogo?.let {
-                loadGamesFromDatabase()
-            }
-        }
-    }
 
     private val editGameLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -52,7 +38,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-
             Activity.RESULT_FIRST_USER -> {
                 val jogoExcluido = data?.getSerializableExtra("jogoParaExcluir") as? Game
                 jogoExcluido?.let {
@@ -69,57 +54,59 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_filters)
 
-        val fabFilter = findViewById<FloatingActionButton>(R.id.fabFilter)
-        fabFilter.setOnClickListener {
-            val intent = Intent(this, FilterActivity::class.java)
-            startActivity(intent)
-        }
-
+        tabLayout = findViewById(R.id.tabLayout)
+        recyclerView = findViewById(R.id.recyclerViewFiltered)
+        fabAddFiltered = findViewById(R.id.fabAddFiltered)
+        dbHelper = GameDatabaseHelper(this)
         textEmpty = findViewById(R.id.textEmpty)
 
-        dbHelper = GameDatabaseHelper(this)
-
-        recyclerView = findViewById(R.id.recyclerViewGames)
-        fabAdd = findViewById(R.id.fabAdd)
-
+        // Inicializa RecyclerView
+        recyclerView.layoutManager = LinearLayoutManager(this)
         gameAdapter = GameAdapter(gameList) { selectedGame ->
             val intent = Intent(this, GameDetailsActivity::class.java)
             intent.putExtra("jogoSelecionado", selectedGame)
             editGameLauncher.launch(intent)
         }
+        recyclerView.adapter = gameAdapter
+        recyclerView.adapter = gameAdapter
 
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = gameAdapter
-        }
+        // Carrega inicialmente a primeira aba (Zerado)
+        loadGamesByStatus("Zerado")
 
-        fabAdd.setOnClickListener {
+        // Listener para trocar aba e filtrar os jogos
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                val status = tab?.text.toString()
+                loadGamesByStatus(status)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+
+        // Botão para adicionar novo jogo (opcional: pode abrir AddGameActivity)
+        fabAddFiltered.setOnClickListener {
             val intent = Intent(this, AddGameActivity::class.java)
-            addGameLauncher.launch(intent)
+            startActivity(intent)
         }
 
-        // Carrega os dados do banco ao iniciar
-        loadGamesFromDatabase()
+        // Voltar no ícone de voltar da toolbar
+        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).setNavigationOnClickListener {
+            finish()
+        }
     }
 
-    override fun onResume() {
-        super.onResume()
-        loadGamesFromDatabase()
-    }
-
-    private fun loadGamesFromDatabase() {
+    private fun loadGamesByStatus(status: String) {
         gameList.clear()
-        gameList.addAll(dbHelper.getAllGames())
+        gameList.addAll(dbHelper.getGamesByStatus(status))
         gameAdapter.notifyDataSetChanged()
 
         if (gameList.isEmpty()) {
             textEmpty.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
         } else {
             textEmpty.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
         }
     }
 }
